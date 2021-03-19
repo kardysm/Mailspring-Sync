@@ -14,3 +14,11 @@ MailSync.xcodeproj/xcuserdata
 /MailSync.xcodeproj/project.xcworkspace/xcuserdata/bengotow.xcuserdatad/IDEFindNavigatorScopes.plist
 /Vendor/libetpan/build-mac/DerivedData
 /DerivedData
+/mailsync
+/Makefile
+/CMakeCache.txt
+/cmake-build-debug/
+/cmake_install.cmake
+/Vendor/mailcore2/build/
+/CMakeFiles/
+/.idea/
