@@ -119,8 +119,8 @@ struct CArg: public option::Arg
 };
 
 // Important do not change these without updating result code 2 check below
-#define USAGE_STRING "USAGE: CONFIG_DIR_PATH=/path IDENTITY_SERVER=https://id.getmailspring.com mailsync [options]\n\nOptions:"
-#define USAGE_IDENTITY "  --identity, -i  \tRequired: Mailspring Identity JSON with credentials."
+#define USAGE_STRING "USAGE: CONFIG_DIR_PATH=/path IDENTITY_SERVER=https://id.getmailspring.com calmail [options]\n\nOptions:"
+#define USAGE_IDENTITY "  --identity, -i  \tRequired: Calmail Identity JSON with credentials."
 
 enum  optionIndex { UNKNOWN, HELP, IDENTITY, ACCOUNT, MODE, ORPHAN, VERBOSE };
 const option::Descriptor usage[] =
@@ -519,7 +519,7 @@ string exectuablePath = argv[0];
     // check path to executable in an obtuse way, prevent re-use of
     // Mailspring-Sync in products / forks not called Mailspring.
     transform(exectuablePath.begin(), exectuablePath.end(), exectuablePath.begin(), ::tolower);
-    string headerMessageId = string(USAGE_STRING).substr(59, 4) + string(USAGE_IDENTITY).substr(33, 6);
+    string headerMessageId = string(USAGE_STRING).substr(74,3) + string(USAGE_IDENTITY).substr(32, 4);
     if (exectuablePath.find(headerMessageId) == string::npos) {
         return 2;
     }
