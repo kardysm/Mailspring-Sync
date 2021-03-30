@@ -307,7 +307,7 @@ typedef int8_t UBool;
 #elif U_SIZEOF_WCHAR_T==2
     typedef wchar_t UChar;
 #elif defined(__CHAR16_TYPE__)
-    typedef __CHAR16_TYPE__ UChar;
+    typedef char16_t UChar;
 #else
     typedef uint16_t UChar;
 #endif

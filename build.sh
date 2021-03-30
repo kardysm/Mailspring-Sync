@@ -33,17 +33,17 @@ elif [[ "$OSTYPE" == "linux-gnu" ]]; then
     mkdir "$DEP_BUILDS_DIR"
   fi
 
-  if [ -d "$DEP_BUILDS_DIR/openssl-1.1.0f" ]; then
-    echo "Installing openssl-1.1.0f"
-    cd "$DEP_BUILDS_DIR/openssl-1.1.0f"
+  if [ -d "$DEP_BUILDS_DIR/openssl-1.1.1k" ]; then
+    echo "Installing openssl-1.1.1k"
+    cd "$DEP_BUILDS_DIR/openssl-1.1.1k"
     sudo make install
     sudo ldconfig
   else
-    echo "Building and installing openssl-1.1.0f"
+    echo "Building and installing openssl-1.1.1k"
     cd "$DEP_BUILDS_DIR"
-    wget -q https://ftp.openssl.org/source/old/1.1.0/openssl-1.1.0f.tar.gz
-    tar -xzf openssl-1.1.0f.tar.gz
-    cd openssl-1.1.0f
+    wget -q --no-check-certificate https://ftp.openssl.org/source/openssl-1.1.1k.tar.gz
+    tar -xzf openssl-1.1.1k.tar.gz
+    cd openssl-1.1.1k
     sudo ./config --prefix=/opt/openssl --openssldir=/opt/openssl shared
     sudo make
     sudo make install
@@ -61,21 +61,29 @@ elif [[ "$OSTYPE" == "linux-gnu" ]]; then
     echo "Building and installing curl-7.70.0..."
     cd "$DEP_BUILDS_DIR"
     sudo apt-get build-dep curl
-    wget -q http://curl.haxx.se/download/curl-7.70.0.tar.bz2
+    wget -q  --no-check-certificate http://curl.haxx.se/download/curl-7.70.0.tar.bz2
     tar -xjf curl-7.70.0.tar.bz2
     cd curl-7.70.0
-    ./configure --quiet --disable-cookies --disable-ldaps --disable-ldap --disable-ftp --disable-ftps --disable-gopher --disable-dict --disable-imap --disable-imaps --disable-pop3 --disable-pop3s --disable-rtsp --disable-smb --disable-smtp --disable-smtps --disable-telnet --disable-tftp --disable-shared --enable-static --enable-ares --without-libidn --without-librtmp --with-ssl=/opt/openssl
+    sudo apt remove libidn2-dev
+    CPPFLAGS="-DNGHTTP2_STATICLIB -DCURL_STATICLIB" LDFLAGS="-static" PKG_CONFIG="pkg-config --static" \
+    ./configure --quiet --disable-cookies --disable-ldaps --disable-ldap --disable-ftp --disable-ftps \
+    --disable-gopher --disable-dict --disable-imap --disable-imaps --disable-pop3 --disable-pop3s \
+    --disable-rtsp --disable-smb --disable-smtp --disable-smtps --disable-telnet --disable-tftp \
+    --disable-shared --enable-static --enable-ares --without-libidn --without-librtmp --with-ssl=/opt/openssl \
+    --without-libpsl --without-brotli --without-nghttp2
     make >/dev/null
     sudo make install prefix=/usr >/dev/null
     sudo ldconfig
   fi
   
 
-  echo "OpenSSL files:"
+#  echo "OpenSSL files:"
   ls /opt/openssl/include/openssl
   ls /opt/openssl/lib
 
   echo "Symbolic linking new libssl libs into /usr/lib to workaround weird libetpan autogen:"
+  sudo rm /usr/lib/libssl.so.1.1
+  sudo rm /usr/lib/libcrypto.so.1.1
   sudo ln -s /opt/openssl/lib/libssl.so.1.1 /usr/lib/libssl.so.1.1
   sudo ln -s /opt/openssl/lib/libcrypto.so.1.1 /usr/lib/libcrypto.so.1.1
 
@@ -115,7 +123,7 @@ elif [[ "$OSTYPE" == "linux-gnu" ]]; then
 
   # Zip this stuff up so we can push it to S3 as a single artifacts
   cd "$APP_ROOT_DIR"
-  tar -czf "$APP_DIST_DIR/mailsync.tar.gz" *.so* mailsync mailsync.bin --wildcards
+  tar -czf "$APP_DIST_DIR/mailsync.tar.gz" *.so* mailsync mailsync.bin
 else
   echo "Mailsync does not build on $OSTYPE yet.";
 fi

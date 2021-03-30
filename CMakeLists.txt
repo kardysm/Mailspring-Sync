@@ -1,10 +1,10 @@
 cmake_minimum_required (VERSION 3.1 FATAL_ERROR)
-project (mailsync) 
+project (mailsync)
 
-SET (CMAKE_C_COMPILER "/usr/bin/gcc-5")
+SET (CMAKE_C_COMPILER "/usr/bin/gcc")
 SET (CMAKE_C_FLAGS     "-std=c++1z")
 
-SET (CMAKE_CXX_COMPILER "/usr/bin/g++-5")
+SET (CMAKE_CXX_COMPILER "/usr/bin/g++")
 SET (CMAKE_CXX_FLAGS   "-std=c++1z -Wno-unknown-pragmas")
 
 #Set Linker flags
@@ -20,12 +20,12 @@ link_directories (${GLIB_LIBRARY_DIRS})
 IF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 
   set(additional_includes
-    /usr/include/tidy
-    /usr/include/libxml2
-    /usr/include/curl
-  )
-  
-  set(icu_libraries icudata icui18n icuio icule iculx icutest icutu icuuc)
+          /usr/include/tidy
+          /usr/include/libxml2
+          /usr/include/curl
+          )
+
+  set(icu_libraries icudata icui18n icuio icutest icutu icuuc)
   set(linux_libraries ${icu_libraries} pthread uuid xml2)
 
   link_directories(/opt/openssl/lib)
@@ -40,17 +40,17 @@ IF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
   include_directories(MailSync MailSync/Models)
 
   file(GLOB SOURCES
-    MailSync/*.h
-    MailSync/*.[ch]pp
-    MailSync/Models/*.h
-    MailSync/Models/*.[ch]pp
-    Vendor/SQLiteCpp/sqlite3/*.[ch]
-    Vendor/SQLiteCpp/src/*.[ch]pp
-    Vendor/icalendarlib/*.h
-    Vendor/icalendarlib/*.cpp
-    Vendor/StanfordCPPLib/*.[ch]pp
-    Vendor/StanfordCPPLib/stacktrace/*.[ch]pp
-  )
+          MailSync/*.h
+          MailSync/*.[ch]pp
+          MailSync/Models/*.h
+          MailSync/Models/*.[ch]pp
+          Vendor/SQLiteCpp/sqlite3/*.[ch]
+          Vendor/SQLiteCpp/src/*.[ch]pp
+          Vendor/icalendarlib/*.h
+          Vendor/icalendarlib/*.cpp
+          Vendor/StanfordCPPLib/*.[ch]pp
+          Vendor/StanfordCPPLib/stacktrace/*.[ch]pp
+          )
 
   add_executable(mailsync MailSync/main.cpp ${SOURCES})
 
@@ -91,7 +91,10 @@ IF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
   find_library(ICUDATA_LIB NAMES libicudata.a libicudata)
   target_link_libraries(mailsync ${ICUDATA_LIB})
 
-  target_link_libraries(mailsync /tmp/mailsync-build-deps-v2/curl-7.70.0/lib/.libs/libcurl.a)    
+  find_library(NGHTTP2_LIB NAMES libnghttp2.a libnghttp2)
+  target_link_libraries(mailsync ${NGHTTP2_LIB})
+
+  target_link_libraries(mailsync /tmp/mailsync-build-deps-v2/curl-7.70.0/lib/.libs/libcurl.a)
 
   find_library(C_ARES_LIB NAMES libcares.a libcares)
   target_link_libraries(mailsync ${C_ARES_LIB})
