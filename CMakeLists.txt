@@ -94,7 +94,7 @@ IF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
   find_library(NGHTTP2_LIB NAMES libnghttp2.a libnghttp2)
   target_link_libraries(mailsync ${NGHTTP2_LIB})
 
-  target_link_libraries(mailsync /tmp/mailsync-build-deps-v2/curl-7.70.0/lib/.libs/libcurl.a)
+  target_link_libraries(mailsync /tmp/mailsync-build-deps-v2/curl-7.75.0/lib/.libs/libcurl.a)
 
   find_library(C_ARES_LIB NAMES libcares.a libcares)
   target_link_libraries(mailsync ${C_ARES_LIB})
